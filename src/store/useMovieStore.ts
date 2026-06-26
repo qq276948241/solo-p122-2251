@@ -53,6 +53,17 @@ export const useMovieStore = create<MovieState>()(
     }),
     {
       name: "movie-review-storage",
+      merge: (persistedState, currentState) => ({
+        ...currentState,
+        ...(persistedState as object),
+        sortBy: (persistedState as { sortBy?: SortBy })?.sortBy ?? currentState.sortBy,
+      }),
+      partialize: (state) => ({
+        movies: state.movies,
+        searchQuery: state.searchQuery,
+        selectedGenre: state.selectedGenre,
+        sortBy: state.sortBy,
+      }),
     }
   )
 );
@@ -61,7 +72,8 @@ export function filterMovies(
   movies: Movie[],
   searchQuery: string,
   selectedGenre: string | null
-) {
+): Movie[] {
+  if (!Array.isArray(movies)) return [];
   return movies.filter((movie) => {
     const matchesSearch =
       searchQuery.trim() === "" ||
@@ -73,6 +85,7 @@ export function filterMovies(
 }
 
 export function sortMovies(movies: Movie[], sortBy: SortBy): Movie[] {
+  if (!Array.isArray(movies)) return [];
   if (movies.length <= 1) return movies;
 
   const sorted = [...movies];
