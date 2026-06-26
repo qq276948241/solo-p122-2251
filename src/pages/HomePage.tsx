@@ -1,18 +1,9 @@
-import { useMemo } from "react";
 import Header from "@/components/Header";
 import MovieGrid from "@/components/MovieGrid";
-import { useMovieStore, filterMovies } from "@/store/useMovieStore";
+import { useMovieFilter } from "@/hooks/useMovieFilter";
 
 export default function HomePage() {
-  const movies = useMovieStore((s) => s.movies);
-  const searchQuery = useMovieStore((s) => s.searchQuery);
-  const selectedGenre = useMovieStore((s) => s.selectedGenre);
-  const sortBy = useMovieStore((s) => s.sortBy);
-
-  const filteredMovies = useMemo(
-    () => filterMovies(movies, searchQuery, selectedGenre),
-    [movies, searchQuery, selectedGenre]
-  );
+  const { totalCount, filteredCount, displayMovies } = useMovieFilter();
 
   return (
     <div className="min-h-screen bg-midnight-950">
@@ -25,11 +16,9 @@ export default function HomePage() {
             </h1>
             <p className="text-midnight-400 text-sm">
               已收藏{" "}
-              <span className="text-amber-400 font-medium">{movies.length}</span>{" "}
+              <span className="text-amber-400 font-medium">{totalCount}</span>{" "}
               部电影，当前展示{" "}
-              <span className="text-amber-400 font-medium">
-                {filteredMovies.length}
-              </span>{" "}
+              <span className="text-amber-400 font-medium">{filteredCount}</span>{" "}
               部
             </p>
           </div>
@@ -37,7 +26,7 @@ export default function HomePage() {
             "电影是每秒二十四格的真理" ——戈达尔
           </div>
         </div>
-        <MovieGrid filteredMovies={filteredMovies} sortBy={sortBy} />
+        <MovieGrid movies={displayMovies} />
       </main>
       <footer className="border-t border-midnight-800 py-8 mt-12">
         <div className="container text-center text-midnight-500 text-sm">

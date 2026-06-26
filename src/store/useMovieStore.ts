@@ -71,3 +71,23 @@ export function filterMovies(
     return matchesSearch && matchesGenre;
   });
 }
+
+export function sortMovies(movies: Movie[], sortBy: SortBy): Movie[] {
+  if (movies.length <= 1) return movies;
+
+  const sorted = [...movies];
+
+  switch (sortBy) {
+    case "rating":
+      return sorted.sort((a, b) => b.rating - a.rating);
+
+    case "recent":
+      return sorted.sort((a, b) => b.createdAt - a.createdAt);
+
+    case "title":
+      return sorted.sort((a, b) => a.title.localeCompare(b.title, "zh-CN"));
+
+    default:
+      return sorted;
+  }
+}
