@@ -3,15 +3,19 @@ import { persist } from "zustand/middleware";
 import type { Movie } from "@/types";
 import { mockMovies } from "@/data/mockMovies";
 
+export type SortBy = "rating" | "recent" | "title";
+
 interface MovieState {
   movies: Movie[];
   searchQuery: string;
   selectedGenre: string | null;
+  sortBy: SortBy;
   addMovie: (movie: Omit<Movie, "id" | "createdAt">) => void;
   deleteMovie: (id: string) => void;
   getMovieById: (id: string) => Movie | undefined;
   setSearchQuery: (query: string) => void;
   setSelectedGenre: (genre: string | null) => void;
+  setSortBy: (sort: SortBy) => void;
 }
 
 export const useMovieStore = create<MovieState>()(
@@ -20,6 +24,7 @@ export const useMovieStore = create<MovieState>()(
       movies: mockMovies,
       searchQuery: "",
       selectedGenre: null,
+      sortBy: "recent",
 
       addMovie: (movieData) =>
         set((state) => ({
@@ -43,6 +48,8 @@ export const useMovieStore = create<MovieState>()(
       setSearchQuery: (query) => set({ searchQuery: query }),
 
       setSelectedGenre: (genre) => set({ selectedGenre: genre }),
+
+      setSortBy: (sort) => set({ sortBy: sort }),
     }),
     {
       name: "movie-review-storage",

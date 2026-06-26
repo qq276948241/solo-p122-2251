@@ -1,12 +1,40 @@
+import { useMemo } from "react";
 import type { Movie } from "@/types";
+import type { SortBy } from "@/store/useMovieStore";
 import MovieCard from "./MovieCard";
 
 interface MovieGridProps {
   filteredMovies: Movie[];
+  sortBy: SortBy;
 }
 
-export default function MovieGrid({ filteredMovies }: MovieGridProps) {
-  if (filteredMovies.length === 0) {
+function sortMovies(movies: Movie[], sortBy: SortBy): Movie[] {
+  if (movies.length <= 1) return movies;
+
+  const sorted = [...movies];
+
+  switch (sortBy) {
+    case "rating":
+      return sorted.sort((a, b) => b.rating - a.rating);
+
+    case "recent":
+      return sorted.sort((a, b) => b.createdAt - a.createdAt);
+
+    case "title":
+      return sorted.sort((a, b) => a.title.localeCompare(b.title, "zh-CN"));
+
+    default:
+      return sorted;
+  }
+}
+
+export default function MovieGrid({ filteredMovies, sortBy }: MovieGridProps) {
+  const sortedMovies = useMemo(
+    () => sortMovies(filteredMovies, sortBy),
+    [filteredMovies, sortBy]
+  );
+
+  if (sortedMovies.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
         <div className="text-6xl mb-4">🎬</div>
@@ -18,7 +46,7 @@ export default function MovieGrid({ filteredMovies }: MovieGridProps) {
 
   return (
     <div className="masonry-grid">
-      {filteredMovies.map((movie, index) => (
+      {sortedMovies.map((movie, index) => (
         <div
           key={movie.id}
           style={{ animationDelay: `${index * 50}ms` }}

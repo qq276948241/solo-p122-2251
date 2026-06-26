@@ -7,6 +7,7 @@ export default function HomePage() {
   const movies = useMovieStore((s) => s.movies);
   const searchQuery = useMovieStore((s) => s.searchQuery);
   const selectedGenre = useMovieStore((s) => s.selectedGenre);
+  const sortBy = useMovieStore((s) => s.sortBy);
 
   const filteredMovies = useMemo(
     () => filterMovies(movies, searchQuery, selectedGenre),
@@ -36,7 +37,7 @@ export default function HomePage() {
             "电影是每秒二十四格的真理" ——戈达尔
           </div>
         </div>
-        <MovieGrid filteredMovies={filteredMovies} />
+        <MovieGrid filteredMovies={filteredMovies} sortBy={sortBy} />
       </main>
       <footer className="border-t border-midnight-800 py-8 mt-12">
         <div className="container text-center text-midnight-500 text-sm">
